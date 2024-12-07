@@ -1,7 +1,8 @@
 import { Router } from "express";
 import subcategoriesService from "./subcategories.service";
+import subcategoriesValidation from "./subcategories.validation";
 
-const subcategoriesRouter: Router = Router();
+const subcategoriesRouter: Router = Router({ mergeParams: true });
 
 subcategoriesRouter
   .route("/")
@@ -11,13 +12,20 @@ subcategoriesRouter
   )
   .post(
     subcategoriesService.setCategoryId,
+    subcategoriesValidation.createOne,
     subcategoriesService.createSubcategory
   );
 
 subcategoriesRouter
   .route("/:id")
-  .get(subcategoriesService.getOneSubcategory)
-  .put(subcategoriesService.updateSubcategory)
-  .delete(subcategoriesService.deleteSubcategory);
+  .get(subcategoriesValidation.getOne, subcategoriesService.getOneSubcategory)
+  .put(
+    subcategoriesValidation.updateOne,
+    subcategoriesService.updateSubcategory
+  )
+  .delete(
+    subcategoriesValidation.deleteOne,
+    subcategoriesService.deleteSubcategory
+  );
 
 export default subcategoriesRouter;

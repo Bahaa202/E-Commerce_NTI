@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import expressAsyncHandler from "express-async-handler";
 import { ISubcategories } from "./subcategories.interface";
 import subcategoriesSchema from "./subcategories.schema";
+import refactorService from "../refactor.service";
 
 class SubcategoriesService {
   setCategoryId(req: Request, res: Response, next: NextFunction) {
@@ -15,70 +16,26 @@ class SubcategoriesService {
     req.filterData = filterData;
     next();
   }
+
   // Get All Subcategories
-  getAllSubcategories = expressAsyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
-      let filterData: any = {};
-      if (req.filterData) filterData = req.filterData;
-      const subcategories: ISubcategories[] = await subcategoriesSchema.find(
-        filterData
-      );
-      res.status(200).json({ data: subcategories });
-    }
-  );
+  getAllSubcategories =
+    refactorService.getAll<ISubcategories>(subcategoriesSchema);
 
   // Create a new Subcategory
-  createSubcategory = expressAsyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const subcategories: ISubcategories | null =
-        await subcategoriesSchema.create(req.body);
-      res.status(201).json({ data: subcategories });
-    }
-  );
+  createSubcategory =
+    refactorService.createOne<ISubcategories>(subcategoriesSchema);
 
   // Get One Subcategory
-  getOneSubcategory = expressAsyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const subcategory: ISubcategories | null =
-        await subcategoriesSchema.findById(req.params.id);
-      if (subcategory) {
-        res.status(200).json({ data: subcategory });
-      } else {
-        res.status(404).send({ message: "Subcategory not found" });
-      }
-      next();
-    }
-  );
+  getOneSubcategory =
+    refactorService.getOne<ISubcategories>(subcategoriesSchema);
 
   // Update Subcategory
-  updateSubcategory = expressAsyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const updatedSubcategory: ISubcategories | null =
-        await subcategoriesSchema.findByIdAndUpdate(req.params.id, req.body, {
-          new: true,
-        });
-      if (updatedSubcategory) {
-        res.status(200).json({ data: updatedSubcategory });
-      } else {
-        res.status(404).send({ message: "Subcategory not found" });
-      }
-      next();
-    }
-  );
+  updateSubcategory =
+    refactorService.updateOne<ISubcategories>(subcategoriesSchema);
 
   // Delete Subcategory
-  deleteSubcategory = expressAsyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
-      const deletedSubcategory: ISubcategories | null =
-        await subcategoriesSchema.findByIdAndDelete(req.params.id);
-      if (deletedSubcategory) {
-        res.status(200).json({ message: "Subcategory deleted successfully" });
-      } else {
-        res.status(404).send({ message: "Subcategory not found" });
-      }
-      next();
-    }
-  );
+  deleteSubcategory =
+    refactorService.deleteOne<ISubcategories>(subcategoriesSchema);
 }
 
 const subcategoriesService = new SubcategoriesService();
