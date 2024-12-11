@@ -1,4 +1,5 @@
 import { Server } from "http";
+import hpp from "hpp";
 import express from "express";
 import path from "path";
 import dotenv from "dotenv";
@@ -8,14 +9,20 @@ import mountRoutes from ".";
 
 const app: express.Application = express();
 app.use(express.json({ limit: "10kb" }));
+
 let server: Server;
 dotenv.config();
+
+app.use(express.static("uploads"));
+app.use(hpp({whitelist:["price"]}))
+
 i18n.configure({
   locales: ["en", "ar"],
   directory: path.join(__dirname, "locales"),
   defaultLocale: "en",
   queryParameter: "lang",
 });
+
 app.use(i18n.init);
 dbConnection();
 mountRoutes(app);

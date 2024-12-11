@@ -3,7 +3,7 @@ import validatorMiddleware from "../middlewares/validator.middleware";
 import categoriesSchema from "../categories/categories.schema";
 import subcategoriesSchema from "../subcategories/subcategories.schema";
 
-class SubcategoriesValidation {
+class ProductsValidation {
   createOne = [
     body("name")
       .notEmpty()
@@ -109,13 +109,6 @@ class SubcategoriesValidation {
         )
           throw new Error(`${req.__("validation_value")}`);
         return true;
-      })
-      //If subcategory exists but category is not present in the request body, it throws an error with the message req.__("subcategory_requires_category")
-      .custom((val, { req }) => {
-        if (val && !req.body.category) {
-          throw new Error(req.__("subcategory_requires_category"));
-        }
-        return true;
       }),
     validatorMiddleware,
   ];
@@ -133,6 +126,6 @@ class SubcategoriesValidation {
   ];
 }
 
-const subcategoriesValidation = new SubcategoriesValidation();
+const productsValidation = new ProductsValidation();
 
-export default subcategoriesValidation;
+export default productsValidation;

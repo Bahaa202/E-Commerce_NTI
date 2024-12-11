@@ -1,17 +1,23 @@
 import { Request, Response, NextFunction } from "express";
 import expressAsyncHandler from "express-async-handler";
-import mongoose, { model } from "mongoose";
+import mongoose from "mongoose";
 import ApiErrors from "./utils/apiErrors";
+import Features from "./utils/features";
 
 class RefactorService {
   // Get All Categories
-  getAll = <modelType>(model: mongoose.Model<any>) =>
+  getAll = <modelType>(model: mongoose.Model<any>, modelName?:string) =>
     expressAsyncHandler(
       async (req: Request, res: Response, next: NextFunction) => {
         let filterData: any = {};
         if (req.filterData) filterData = req.filterData;
-        const documents: modelType[] = await model.find(filterData);
-        res.status(200).json({ data: documents });
+        const documentsCount:number = await model.find(filterData).countDocuments();
+        const features = new Features(model.find(filterData), req.query).sort().limitFields().search(modelName!).pagination(documentsCount!);
+        const {mongooseQuery, pagination} = features;
+        const documents:modelType[] = await mongooseQuery;
+        // if (req.filterData) filterData = req.filterData;
+        // const documents: modelType[] = await model.find(filterData);
+        res.status(200).json({paginationResult:pagination, length: documents.length,data: documents });
       }
     );
 
