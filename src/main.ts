@@ -6,15 +6,24 @@ import dotenv from "dotenv";
 import i18n from "i18n";
 import dbConnection from "./config/database";
 import mountRoutes from ".";
+import cors from "cors";
 
 const app: express.Application = express();
 app.use(express.json({ limit: "10kb" }));
+app.use(
+  cors({
+    origin: ["http://localhost:4200"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 let server: Server;
 dotenv.config();
 
 app.use(express.static("uploads"));
-app.use(hpp({whitelist:["price"]}))
+app.use(hpp({ whitelist: ["price"] }));
 
 i18n.configure({
   locales: ["en", "ar"],

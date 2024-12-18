@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import expressAsyncHandler from "express-async-handler";
 import { ISubcategories } from "./subcategories.interface";
 import subcategoriesSchema from "./subcategories.schema";
 import refactorService from "../refactor.service";

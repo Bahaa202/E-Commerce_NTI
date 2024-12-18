@@ -2,7 +2,7 @@ import { Router } from "express";
 import productsService from "./products.service";
 import productsValidation from "./products.validation";
 
-const productsRoute: Router = Router();
+const productsRoute: Router = Router({ mergeParams: true });
 
 productsRoute
   .route("/")
