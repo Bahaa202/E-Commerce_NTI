@@ -3,41 +3,51 @@ import ApiErrors from "../utils/apiErrors";
 
 // Development error handler
 const devErrors = (err: any, res: express.Response) => {
-  res.status(err.statusCode!).json({
+  const statusCode = err.statusCode || 500; // Ensure a valid status code
+  res.status(statusCode).json({
     errors: err,
-    status: err.status,
-    message: err.message,
+    status: err.status || "Error",
+    message: err.message || "An error occurred",
     stack: err.stack,
   });
 };
 
 // Production error handler
 const prodErrors = (err: any, res: express.Response) => {
-  res.status(err.statusCode!).json({
-    status: err.status,
-    message: err.message,
+  const statusCode = err.statusCode || 500; // Ensure a valid status code
+  res.status(statusCode).json({
+    status: err.status || "Error",
+    message: err.message || "Something went wrong",
   });
 };
 
 // JWT expired error handler
 const handleJwtExpired = (message: string) => {
-  return new ApiErrors(message, 401);
+  return new ApiErrors(message, 401); // Ensure statusCode is always 401
 };
 
 // Global error handler middleware
 const globalErrors = (
-    err: any,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
+  err: any,
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
 ) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || "Error";
-  if (err.name === "TokenExpiredError" || err.name === "JsonWebTokenError") err=handleJwtExpired(req.__('session_expired'))
-  if (process.env.NODE_ENV === "development")
+  err.statusCode = err.statusCode || 500; // Default statusCode to 500
+  err.status = err.status || "Error"; // Default status to "Error"
+
+  // Handle JWT errors
+  if (err.name === "TokenExpiredError" || err.name === "JsonWebTokenError") {
+    err = handleJwtExpired(req.__("session_expired"));
+  }
+
+  // Use environment to determine error handling
+  const env = process.env.NODE_ENV || "development"; // Fallback to "development"
+  if (env === "development") {
     devErrors(err, res);
-  else
+  } else {
     prodErrors(err, res);
+  }
 };
 
 export default globalErrors;

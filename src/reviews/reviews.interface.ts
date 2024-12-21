@@ -5,7 +5,7 @@ export interface IReviews extends Document {
   populate(arg0: { path: string; select: string }): unknown;
   readonly user: IUsers;
   readonly product: IProducts;
-  readonly rating: number;
+  readonly rate: number;
   readonly comment: string;
   readonly createdAt: Date;
 }

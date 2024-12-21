@@ -8,7 +8,11 @@ import { uploadMultiFiles } from "../middlewares/uploadFiles.middleware";
 class ProductsService {
   getAll = refactorService.getAll<IProducts>(productsSchema, "products");
   createOne = refactorService.createOne<IProducts>(productsSchema);
-  getOne = refactorService.getOne<IProducts>(productsSchema);
+  getOne = refactorService.getOne<IProducts>(
+    productsSchema,
+    "products",
+    "reviews"
+  );
   updateOne = refactorService.updateOne<IProducts>(productsSchema);
   deleteOne = refactorService.deleteOne<IProducts>(productsSchema);
 

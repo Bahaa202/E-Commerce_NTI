@@ -5,7 +5,7 @@ import productsSchema from "../products/products.schema";
 const reviewsSchema = new mongoose.Schema<IReviews>(
   {
     comment: String,
-    rating: Number,
+    rate: Number,
     user: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     product: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
   },
@@ -31,7 +31,7 @@ reviewsSchema.statics.calcRating = async function (productId) {
   } else {
     await productsSchema.findByIdAndUpdate(productId, {
       rateAvg: 0,
-      rating: 0,
+      rate: 0,
     });
   }
 };
