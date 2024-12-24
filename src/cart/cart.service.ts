@@ -11,6 +11,7 @@ class CartService {
     async (req: Request, res: Response, next: NextFunction) => {
       const cart = await cartSchema.findOne({ user: req.user._id });
       if (!cart) return next(new ApiErrors("your cart is empty", 404));
+      res.status(200).json({ length: cart?.items.length, data: cart });
     }
   );
 
@@ -58,11 +59,7 @@ class CartService {
       const cart = await cartSchema.findOneAndUpdate(
         { user: req.user._id },
         {
-          $pull: {
-            items: {
-              product: req.params.productId,
-            },
-          },
+          $pull: { items: { _id: req.params.itemId } },
         },
         { new: true }
       );

@@ -1,47 +1,39 @@
 import { body, param } from "express-validator";
 import validatorMiddleware from "../middlewares/validator.middleware";
-import orderSchema from "./order.schema";
 
 class OrderValidation {
-  createOne = [
-    body("name")
+  createCashOrder = [
+    body("address")
       .notEmpty()
-      .withMessage((val, { req }) => req.__("validation_field"))
-      .isLength({ min: 2, max: 50 })
-      .withMessage((val, { req }) => req.__("validation_length_short"))
-      .custom(async (val: string, { req }) => {
-        const category = await orderSchema.findOne({ name: val });
-        if (category) throw new Error(`${req.__("validation_value")}`);
-        return true;
-      }),
+      .withMessage("Shipping address is required")
+      .isString()
+      .withMessage("Shipping address must be a string"),
     validatorMiddleware,
   ];
-  updateOne = [
-    param("id")
-      .isMongoId()
-      .withMessage((val, { req }) => req.__("invalid_id")),
-    body("name")
-      .optional()
-      .isLength({ min: 2, max: 50 })
-      .withMessage((val, { req }) => req.__("validation_length_short"))
-      .custom(async (val: string, { req }) => {
-        const category = await orderSchema.findOne({ name: val });
-        if (category && category._id!.toString() !== req.params?.id.toString())
-          throw new Error(`${req.__("validation_value")}`);
-        return true;
-      }),
+  createOnlineOrder = [
+    body("obj.payment_key_claims.extra.token")
+      .notEmpty()
+      .withMessage("Payment token is required")
+      .isString()
+      .withMessage("Payment token must be a string"),
+    body("obj.payment_key_claims.extra.address")
+      .notEmpty()
+      .withMessage("Shipping address is required")
+      .isString()
+      .withMessage("Shipping address must be a string"),
     validatorMiddleware,
   ];
-  getOne = [
-    param("id")
+  orderAction = [
+    param("orderId")
+      .notEmpty()
+      .withMessage("Order ID is required")
       .isMongoId()
       .withMessage((val, { req }) => req.__("invalid_id")),
-    validatorMiddleware,
-  ];
-  deleteOne = [
-    param("id")
-      .isMongoId()
-      .withMessage((val, { req }) => req.__("invalid_id")),
+    body("action")
+      .notEmpty()
+      .withMessage("Action is required")
+      .isIn(["cancel", "return"])
+      .withMessage((val, { req }) => req.__("validation_value")),
     validatorMiddleware,
   ];
 }

@@ -13,7 +13,7 @@ authRouter.post(
 );
 authRouter.post(
   "/forget-password",
-  authValidation.login,
+  authValidation.forgetPassword,
   authService.forgetPassword
 );
 authRouter.post("/verify-code", authService.verifyResetCode);

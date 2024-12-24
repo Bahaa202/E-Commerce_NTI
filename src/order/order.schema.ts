@@ -10,7 +10,7 @@ const ordersSchema = new mongoose.Schema<IOrder>(
         price: Number,
       },
     ],
-    paymentMethod: { type: String, enum: ["cash", "card"], default: "cash" },
+    payment: { type: String, enum: ["cash", "card"], default: "cash" },
     taxPrice: Number,
     itemsPrice: { type: Number },
     totalPrice: { type: Number },
@@ -18,7 +18,7 @@ const ordersSchema = new mongoose.Schema<IOrder>(
     deliveredAt: { type: Date },
     isPaid: { type: Boolean, default: false },
     paidAt: { type: Date },
-    customerId: { type: mongoose.Schema.Types.ObjectId, ref: "customers" },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "users" },
     address: {
       street: String,
       city: String,
