@@ -5,7 +5,7 @@
   "scripts": {
     "start:dev": "nodemon src/main.ts",
     "start:prod": "cross-env NODE_ENV=production node ./dist/main.js",
-    "build": "tsc --output public"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
