@@ -18,7 +18,7 @@ const subcategoriesSchema = new mongoose.Schema<ISubcategories>(
 );
 
 subcategoriesSchema.pre<ISubcategories>(/^find/, function (next) {
-  this.populate({ path: "category", select: "_id name image" });
+  let promise = this.populate({path: "category", select: "_id name image"});
   next();
 });
 

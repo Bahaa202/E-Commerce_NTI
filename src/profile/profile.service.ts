@@ -42,7 +42,6 @@ class ProfileService {
       password: await bcrypt.hash(req.body.password, 13),
       passwordChangedAt: Date.now(),
     }, {new: true});
-    const token = createTokens.accessToken(user?._id, user?.role!);
     if (!user) return next(new ApiErrors(`${req.__('not_found')}`, 404));
     res.status(200).json({data: user});
   });

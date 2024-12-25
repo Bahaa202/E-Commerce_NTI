@@ -33,42 +33,46 @@ class Features {
         }
         return this;
     }
-    search(modelName:string){
-        if(this.queryString.search){
-            let query:any = {};
-            if(modelName === "Product"){
-                query = {$or:[{name: new RegExp(this.queryString.search, "i")},
-                {
-                    description: this.queryString.search
-                }
-            ]
-            };
-            }else {
-                query = {name: new RegExp(this.queryString.search, "i")};
+    search(modelName: string) {
+        if (this.queryString.search) {
+            if (modelName === "Product") {
+                this.mongooseQuery.find({
+                    $or: [
+                        { name: new RegExp(this.queryString.search, "i") },
+                        { description: this.queryString.search },
+                    ],
+                });
+            } else {
+                this.mongooseQuery.find({
+                    name: new RegExp(this.queryString.search, "i"),
+                });
             }
-            this.mongooseQuery.find(query);
         }
         return this;
     }
-    pagination(documentsCount:number){
+
+    pagination(documentsCount: number) {
         const page: number = this.queryString.page * 1 || 1;
-        const limit:number = this.queryString.limit * 1 || 20;
+        const limit: number = this.queryString.limit * 1 || 20;
         const skip: number = (page - 1) * limit;
         const endIndex: number = page * limit;
-        const pagination: any = {};
-        pagination.currentPage = page;
-        pagination.limit = limit;
-        pagination.totalPages = Math.ceil(documentsCount / limit);
-        if(endIndex < documentsCount){
-            pagination.nextPage = page + 1;
+
+        this.paginationResult = {
+            currentPage: page,
+            limit: limit,
+            totalPages: Math.ceil(documentsCount / limit),
+        };
+        if (endIndex < documentsCount) {
+            this.paginationResult.nextPage = page + 1;
         }
         if (skip > 0) {
-            pagination.prevPage = page - 1;
+            this.paginationResult.prevPage = page - 1;
         }
+
         this.mongooseQuery.skip(skip).limit(limit);
-        this.paginationResult = pagination;
         return this;
     }
+
 }
 
 export default Features;

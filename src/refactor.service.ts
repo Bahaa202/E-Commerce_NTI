@@ -9,7 +9,7 @@ class RefactorService {
   // Get All Categories
   getAll = <modelType>(model: mongoose.Model<any>, modelName?: string) =>
     expressAsyncHandler(
-      async (req: Request, res: Response, next: NextFunction) => {
+      async (req: Request, res: Response) => {
         let filterData: any = {};
         if (req.filterData) filterData = req.filterData;
         const documentsCount: number = await model
@@ -35,7 +35,7 @@ class RefactorService {
   // Create a new Category
   createOne = <modelType>(model: mongoose.Model<any>) =>
     expressAsyncHandler(
-      async (req: Request, res: Response, next: NextFunction) => {
+      async (req: Request, res: Response) => {
         const document: modelType = await model.create(req.body);
         res.status(201).json({ data: document });
       }

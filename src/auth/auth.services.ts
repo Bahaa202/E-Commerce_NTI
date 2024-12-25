@@ -11,7 +11,7 @@ import crypto from "node:crypto";
 
 class AuthService {
   signup = asyncHandler(
-    async (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response) => {
       const { username, password, name, email, image, role } = req.body;
 
       let assignedRole = "user"; // Default role

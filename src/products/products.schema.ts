@@ -42,7 +42,7 @@ const imagesUrl = (document: IProducts) => {
 
 productsSchema.post("init", imagesUrl).post("save", imagesUrl);
 productsSchema.pre<IProducts>(/^find/, function (next) {
-  this.populate({ path: "subcategory", select: "name image" });
+  let promise = this.populate({ path: "subcategory", select: "name image" });
   next();
 });
 

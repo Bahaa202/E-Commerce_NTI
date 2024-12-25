@@ -31,7 +31,6 @@ const globalErrors = (
   err: any,
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
 ) => {
   err.statusCode = err.statusCode || 500; // Default statusCode to 500
   err.status = err.status || "Error"; // Default status to "Error"
